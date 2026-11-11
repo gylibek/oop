@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "product-category-project"
+version = "0.1.0"
+description = "Домашнее задание: классы Product и Category"
+authors = ["Your Name <you@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4"
+pytest-cov = "^4.1"
+flake8 = "^6.0"
+
+[tool.pytest.ini_options]
+addopts = "--cov=product_category_project --cov-report=term-missing --cov-report=html"
