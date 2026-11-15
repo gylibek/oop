@@ -1,22 +1,34 @@
+from __future__ import annotations
+
+
 class Product:
-    def __init__(self, name: str, description: str, price: int, quantity: int):
-        self.name = name
-        self.description = description
-        self.__price = price
-        self.quantity = quantity
+    """Товар магазина."""
+
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: int,
+        quantity: int,
+    ) -> None:
+        self.name: str = name
+        self.description: str = description
+        self.__price: int = price
+        self.quantity: int = quantity
+
+    # price: геттер и сеттер
 
     @property
-    def price(self):
+    def price(self) -> int:
         return self.__price
 
     @price.setter
-    def price(self, new_price: int):
+    def price(self, new_price: int) -> None:
         if new_price <= 0:
             print("Цена не должна быть нулевая или отрицательная")
             return
 
-        # Дополнительное задание к заданию 4:
-        # если цена понижается, спрашиваем подтверждение.
+        # Если цена понижается — спрашиваем подтверждение.
         if new_price < self.__price:
             answer = input("Понизить цену? y/n: ")
             if answer.lower() != "y":
@@ -24,12 +36,20 @@ class Product:
 
         self.__price = new_price
 
+    # Класс-метод создания товара
+
     @classmethod
-    def new_product(cls, product_data: dict, products: list | None = None):
+    def new_product(
+        cls,
+        product_data: dict,
+        products: list[Product] | None = None,
+    ) -> Product:
         """
         Создаёт товар из словаря.
-        Дополнительно: если передан список products и в нём есть товар
-        с таким же именем, суммирует количество и выбирает большую цену.
+
+        Если передан список ``products`` и в нём уже есть товар
+        с таким же именем — суммирует количество и выбирает
+        более высокую цену. Возвращает существующий объект.
         """
         name = product_data["name"]
         description = product_data["description"]
@@ -46,26 +66,34 @@ class Product:
 
         return cls(name, description, price, quantity)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
 
+    def __add__(self, other: Product) -> int:
+        return self.price * self.quantity + other.price * other.quantity
+
+
 class Category:
+    """Категория товаров."""
+
     product_count: int = 0
 
-    def __init__(self, name: str):
-            self.name = name
-            self.__products: list[Product] = []
+    def __init__(self, name: str) -> None:
+        self.name: str = name
+        self.__products: list[Product] = []
 
-    def add_product(self, product: Product):
+    # Добавление товара
+
+    def add_product(self, product: Product) -> None:
         self.__products.append(product)
         Category.product_count += 1
 
+    # Геттер списка товаров
+
     @property
-    def products(self):
-        result = ""
-        for product in self.__products:
-            result += (
-                f"{product.name}, {product.price} руб. "
-                f"Остаток: {product.quantity} шт.\n"
-            )
-        return result
+    def products(self) -> str:
+        return "".join(f"{product}\n" for product in self.__products)
+
+    def __str__(self) -> str:
+        total_quantity = sum(product.quantity for product in self.__products)
+        return f"{self.name}, количество продуктов: {total_quantity} шт."
