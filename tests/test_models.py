@@ -1,5 +1,6 @@
 import pytest
-from product_category_project.models import Product, Category
+
+from product_category_project.models import Category, Product
 
 
 @pytest.fixture(autouse=True)
